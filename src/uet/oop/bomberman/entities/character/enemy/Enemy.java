@@ -13,6 +13,7 @@ import uet.oop.bomberman.graphics.Sprite;
 import uet.oop.bomberman.level.Coordinates;
 
 import java.awt.*;
+import java.util.Random;
 
 public abstract class Enemy extends Character {
 
@@ -75,27 +76,48 @@ public abstract class Enemy extends Character {
 	
 	@Override
 	public void calculateMove() {
+            double x1 = Game.getBomberSpeed();
+            
+            System.out.println(_ai.calculateDirection());
+           if(_ai.calculateDirection()==0){
+               move(_x,_y-2*x1);
+           }
+           else if(_ai.calculateDirection()==1){
+               move(_x,_y+2*x1);
+           }
+           else if(_ai.calculateDirection()==2){
+               move(_x+2*x1,_y);
+           }
+           else if(_ai.calculateDirection()==3){
+               move(_x-2*x1,_y);
+           }
+
 		// TODO: Tính toán hướng đi và di chuyển Enemy theo _ai và cập nhật giá trị cho _direction
 		// TODO: sử dụng canMove() để kiểm tra xem có thể di chuyển tới điểm đã tính toán hay không
 		// TODO: sử dụng move() để di chuyển
-		// TODO: nhớ cập nhật lại giá trị cờ _moving khi thay đổi trạng thái di chuyển
-	}
+		// TODO: nhớ cập nhật lại giá trị c�? _moving khi thay đổi trạng thái di chuyển
+               }
 	
 	@Override
 	public void move(double xa, double ya) {
 		if(!_alive) return;
-		_y += ya;
-		_x += xa;
+                if(this.canMove(xa, ya)){
+                _y = ya;
+		_x = xa;
+                }
+		
 	}
 	
 	@Override
 	public boolean canMove(double x, double y) {
+            if(x<0||y<0) return false;
 		// TODO: kiểm tra có đối tượng tại vị trí chuẩn bị di chuyển đến và có thể di chuyển tới đó hay không
-		return false;
+		return true;
 	}
 
 	@Override
 	public boolean collide(Entity e) {
+            
 		// TODO: xử lý va chạm với Flame
 		// TODO: xử lý va chạm với Bomber
 		return true;

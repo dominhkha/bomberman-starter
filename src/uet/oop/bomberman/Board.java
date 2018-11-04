@@ -17,9 +17,10 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import uet.oop.bomberman.level.Coordinates;
 
 /**
- * Quản lý thao tác điều khiển, load level, render các màn hình của game
+ * Quản lý thao tác đi�?u khiển, load level, render các màn hình của game
  */
 public class Board implements IRender {
 	protected LevelLoader _levelLoader;
@@ -27,7 +28,7 @@ public class Board implements IRender {
 	protected Keyboard _input;
 	protected Screen _screen;
 	
-	public Entity[] _entities;
+	public Entity[] _entities ;
 	public List<Character> _characters = new ArrayList<>();
 	protected List<Bomb> _bombs = new ArrayList<>();
 	private List<Message> _messages = new ArrayList<>();
@@ -70,7 +71,7 @@ public class Board implements IRender {
 		int x1 = (Screen.xOffset + screen.getWidth() + Game.TILES_SIZE) / Game.TILES_SIZE; // -> right X
 		int y0 = Screen.yOffset >> 4;
 		int y1 = (Screen.yOffset + screen.getHeight()) / Game.TILES_SIZE; //render one tile plus to fix black margins
-		
+		        
 		for (int y = y0; y < y1; y++) {
 			for (int x = x0; x < x1; x++) {
 				_entities[x + y * _levelLoader.getWidth()].render(screen);
@@ -140,14 +141,15 @@ public class Board implements IRender {
 		}
 	}
 	
-	public Entity getEntity(double x, double y, Character m) {
+	public Entity getEntity(double x1, double y1, Character m) {
 		
 		Entity res = null;
-		
+		int x = Coordinates.pixelToTile(x1);
+                int y = Coordinates.pixelToTile(y1);
 		res = getFlameSegmentAt((int)x, (int)y);
 		if( res != null) return res;
 		
-		res = getBombAt(x, y);
+		res = getBombAt(x1, y1);
 		if( res != null) return res;
 		
 		res = getCharacterAtExcluding((int)x, (int)y, m);
@@ -222,11 +224,12 @@ public class Board implements IRender {
 		return null;
 	}
 	
-	public Entity getEntityAt(double x, double y) {
+	public Entity getEntityAt(int x, int y) {
 		return _entities[(int)x + (int)y * _levelLoader.getWidth()];
 	}
 	
 	public void addEntity(int pos, Entity e) {
+                
 		_entities[pos] = e;
 	}
 	

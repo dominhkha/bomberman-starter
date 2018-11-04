@@ -11,7 +11,7 @@ import java.awt.image.DataBufferInt;
 
 /**
  * Tạo vòng lặp cho game, lưu trữ một vài tham số cấu hình toàn cục,
- * Gọi phương thức render(), update() cho tất cả các entity
+ * G�?i phương thức render(), update() cho tất cả các entity
  */
 public class Game extends Canvas {
 
