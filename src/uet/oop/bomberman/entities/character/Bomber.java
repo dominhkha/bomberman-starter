@@ -11,11 +11,13 @@ import uet.oop.bomberman.input.Keyboard;
 import java.util.Iterator;
 import java.util.List;
 import uet.oop.bomberman.Board;
+import uet.oop.bomberman.entities.LayeredEntity;
 import uet.oop.bomberman.entities.character.enemy.Enemy;
 import uet.oop.bomberman.entities.tile.Grass;
 import uet.oop.bomberman.entities.tile.Tile;
 import uet.oop.bomberman.entities.tile.Wall;
 import uet.oop.bomberman.entities.tile.destroyable.Brick;
+import static uet.oop.bomberman.graphics.Sprite.brick;
 import uet.oop.bomberman.level.Coordinates;
 import uet.oop.bomberman.level.FileLevelLoader;
 import uet.oop.bomberman.level.LevelLoader;
@@ -30,7 +32,7 @@ public class Bomber extends Character {
      */
     protected int _timeBetweenPutBombs = 0;
 
-    public Bomber(int x, int y, Board board) {
+    public Bomber(double x, double y, Board board) {
         super(x, y, board);
         _bombs = _board.getBombs();
         _input = _board.getInput();
@@ -143,11 +145,20 @@ public class Bomber extends Character {
     public boolean canMove(double x, double y) {
        
        //Entity e = _board.getEntity(x, y, this);
-       
+        int i= this._sprite.SIZE;
         Entity e = _board.getEntity(x,y, this);
-       
-        if(this.collide(e)==true) return false;
-        
+        Entity e1 = _board.getEntity(x+10, y, this);
+       Entity e2 = _board.getEntity(x, y-8, this);
+        //Entity e3 = _board.getEntity(x+5, y-5, this);
+         Entity e4 = _board.getEntity(x+8, y-8, this);
+         
+      //  Entity e1 = _board.getEntity(x+10, y, this);
+        //if(this.collide(e)==true) return false;
+        if(e instanceof Wall||e1 instanceof Wall||e4 instanceof Wall||e2 instanceof Wall) return false;
+        if((e instanceof LayeredEntity||e1 instanceof LayeredEntity||e4 instanceof LayeredEntity||e2 instanceof LayeredEntity)&&!(e instanceof Grass)) return false;
+
+       // if((e instanceof Tile||e1 instanceof Tile||e4 instanceof Tile)&&!(e instanceof Grass)) return false;
+        System.out.println(e);
        
        
        return true;
@@ -172,7 +183,8 @@ public class Bomber extends Character {
         // TODO: xử lý va chạm với Enemy
 //        System.out.println("("+e.getXTile()+","+e.getYTile()+")");
        //  System.out.println("("+this.getXTile()+","+this.getYTile()+")");
-       // if(this.getX()/this.getSprite().SIZE==e.getX()&&this.getY()/this.getSprite().SIZE==e.getY()) return true;
+        if(Coordinates.pixelToTile(_x)==(int)e.getX()&&Coordinates.pixelToTile(_y)==(int)e.getY()&&!(e instanceof Grass) ) return true;
+        System.out.println(e.getX()+" "+Coordinates.pixelToTile(_x));
      //  if(this.getXTile()==e.getXTile()&&this.getYTile()==e.getYTile()) return true;
         return false;
     }

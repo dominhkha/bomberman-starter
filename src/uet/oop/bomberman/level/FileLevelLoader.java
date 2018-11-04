@@ -17,6 +17,7 @@ import uet.oop.bomberman.entities.LayeredEntity;
 import uet.oop.bomberman.entities.character.Bomber;
 import uet.oop.bomberman.entities.character.enemy.Balloon;
 import uet.oop.bomberman.entities.tile.Grass;
+import uet.oop.bomberman.entities.tile.Wall;
 import uet.oop.bomberman.entities.tile.destroyable.Brick;
 import uet.oop.bomberman.entities.tile.item.SpeedItem;
 import uet.oop.bomberman.exceptions.LoadLevelException;
@@ -95,7 +96,7 @@ public class FileLevelLoader extends LevelLoader {
                 if (_map[i][j]== '#') {
                     int pos = i +j * _width;
                     Sprite sprite = Sprite.wall;
-                    _board.addEntity(pos, new Grass(i, j, sprite));
+                    _board.addEntity(pos, new Wall(i, j, sprite));
                 } else if (_map[i][j] == '*') {
                    // int xB = 3, yB = 1;
                     _board.addEntity(i + j * _width,
@@ -108,7 +109,10 @@ public class FileLevelLoader extends LevelLoader {
                 else if(_map[i][j]=='p'){
                     int xBomber = i, yBomber = j;
                     _board.addCharacter(new Bomber(Coordinates.tileToPixel(xBomber), Coordinates.tileToPixel(yBomber) + Game.TILES_SIZE, _board));
+                   // _board.addCharacter(new Bomber(i, j + Game.TILES_SIZE, _board));
+
                         Screen.setOffset(0, 0);
+                      
                         _board.addEntity(xBomber + yBomber * _width, new Grass(i, j, Sprite.grass));
                 }
                 else if (_map[i][j]=='1'){

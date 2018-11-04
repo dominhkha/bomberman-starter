@@ -14,6 +14,9 @@ import uet.oop.bomberman.level.Coordinates;
 
 import java.awt.*;
 import java.util.Random;
+import uet.oop.bomberman.entities.LayeredEntity;
+import uet.oop.bomberman.entities.tile.Grass;
+import uet.oop.bomberman.entities.tile.Wall;
 
 public abstract class Enemy extends Character {
 
@@ -78,7 +81,7 @@ public abstract class Enemy extends Character {
 	public void calculateMove() {
             double x1 = Game.getBomberSpeed();
             
-            System.out.println(_ai.calculateDirection());
+          //  System.out.println(_ai.calculateDirection());
            if(_ai.calculateDirection()==0){
                move(_x,_y-2*x1);
            }
@@ -110,9 +113,18 @@ public abstract class Enemy extends Character {
 	
 	@Override
 	public boolean canMove(double x, double y) {
-            if(x<0||y<0) return false;
-		// TODO: kiểm tra có đối tượng tại vị trí chuẩn bị di chuyển đến và có thể di chuyển tới đó hay không
-		return true;
+            int i= this._sprite.SIZE;
+        Entity e = _board.getEntity(x,y, this);
+        Entity e1 = _board.getEntity(x+10, y, this);
+       Entity e2 = _board.getEntity(x, y-8, this);
+        //Entity e3 = _board.getEntity(x+5, y-5, this);
+         Entity e4 = _board.getEntity(x+8, y-8, this);
+         
+      //  Entity e1 = _board.getEntity(x+10, y, this);
+        //if(this.collide(e)==true) return false;
+        if(e instanceof Wall||e1 instanceof Wall||e4 instanceof Wall||e2 instanceof Wall) return false;
+        if((e instanceof LayeredEntity||e1 instanceof LayeredEntity||e4 instanceof LayeredEntity||e2 instanceof LayeredEntity)&&!(e instanceof Grass)) return false;
+        return true;
 	}
 
 	@Override
