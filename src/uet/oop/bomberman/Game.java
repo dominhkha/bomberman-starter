@@ -116,7 +116,7 @@ public class Game extends Canvas {
         _running = true;
         //   Sound_cdjv sound1 = new Sound_cdjv("pause.wav");
         //  sound1.start();
-        Game.playSound("start.wav");
+       
         long lastTime = System.nanoTime();
         long timer = System.currentTimeMillis();
         final double ns = 1000000000.0 / 60.0; //nanosecond, 60 frames per second
@@ -201,31 +201,6 @@ public class Game extends Canvas {
         _paused = true;
     }
 
-    public static void playSound(String str) throws InterruptedException {
-        Timer timer = new Timer();
-        sound = new Sound_cdjv(str);
-        int t = 900;
-        if (str.equals("start.wav")) {
-            t = 2100;
-        } else if (str.equals("BOM_BOUND.wav")) {
-            t = 700;
-        }
-        sound.start();
-        int x = 1;
-        
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                // Your database code here
-                sound.stop();
-                
-            }
-        }, t);
-         
-       
-
-        //  TimeUnit.SECONDS.sleep(2);
-        //  sound.suspend();
-    }
+    
 
 }
