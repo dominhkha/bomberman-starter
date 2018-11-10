@@ -16,7 +16,7 @@ public class Frame extends JFrame {
 	
 	private Game _game;
 
-	public Frame() {
+	public Frame() throws InterruptedException {
 		
 		_containerpane = new JPanel(new BorderLayout());
 		_gamepane = new GamePanel(this);

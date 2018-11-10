@@ -1,6 +1,7 @@
 package uet.oop.bomberman.entities.bomb;
 
 import uet.oop.bomberman.entities.Entity;
+import uet.oop.bomberman.entities.tile.destroyable.Brick;
 import uet.oop.bomberman.graphics.Screen;
 import uet.oop.bomberman.graphics.Sprite;
 
@@ -67,6 +68,10 @@ public class FlameSegment extends Entity {
 
 	@Override
 	public boolean collide(Entity e) {
+            if(e instanceof Brick){
+                ((Brick) e).destroy();
+                e.update();
+            }
 		// TODO: xử lý khi FlameSegment va chạm với Character
 		return true;
 	}

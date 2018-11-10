@@ -23,7 +23,7 @@ public abstract class Tile extends Entity {
 	 */
 	@Override
 	public boolean collide(Entity e) {
-            if(this.getX()==e.getX()&&this.getY()==e.getY()) return true;
+           // if(this.getX()==e.getX()&&this.getY()==e.getY()) return true;
             return false;
 	}
 	

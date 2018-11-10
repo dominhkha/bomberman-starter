@@ -15,11 +15,13 @@ import uet.oop.bomberman.level.Coordinates;
 import java.awt.*;
 import java.util.Random;
 import uet.oop.bomberman.entities.LayeredEntity;
+import uet.oop.bomberman.entities.bomb.FlameSegment;
 import uet.oop.bomberman.entities.tile.Grass;
 import uet.oop.bomberman.entities.tile.Wall;
+import uet.oop.bomberman.entities.tile.destroyable.Brick;
 
 public abstract class Enemy extends Character {
-
+        int c;
 	protected int _points;
 	
 	protected double _speed;
@@ -82,17 +84,19 @@ public abstract class Enemy extends Character {
             double x1 = Game.getBomberSpeed();
             
           //  System.out.println(_ai.calculateDirection());
-           if(_ai.calculateDirection()==0){
-               move(_x,_y-2*x1);
+          c = _ai.calculateDirection();
+           if(c==0){
+               move(_x,_y-x1);
+               
            }
-           else if(_ai.calculateDirection()==1){
-               move(_x,_y+2*x1);
+           else if(c==1){
+               move(_x,_y+x1);
            }
-           else if(_ai.calculateDirection()==2){
-               move(_x+2*x1,_y);
+           else if(c==2){
+               move(_x+x1,_y);
            }
-           else if(_ai.calculateDirection()==3){
-               move(_x-2*x1,_y);
+           else if(c==3){
+               move(_x-x1,_y);
            }
 
 		// TODO: Tính toán hướng đi và di chuyển Enemy theo _ai và cập nhật giá trị cho _direction
@@ -113,23 +117,80 @@ public abstract class Enemy extends Character {
 	
 	@Override
 	public boolean canMove(double x, double y) {
-            int i= this._sprite.SIZE;
-        Entity e = _board.getEntity(x,y, this);
-        Entity e1 = _board.getEntity(x+10, y, this);
-       Entity e2 = _board.getEntity(x, y-8, this);
-        //Entity e3 = _board.getEntity(x+5, y-5, this);
-         Entity e4 = _board.getEntity(x+8, y-8, this);
+          Entity e=_board.getEntity(x, y, this);
+          if(!this.collide(e)) return false;
+         Entity e1 = null;
+         Entity e2 = null;
+         Entity e3 = null;
          
-      //  Entity e1 = _board.getEntity(x+10, y, this);
-        //if(this.collide(e)==true) return false;
-        if(e instanceof Wall||e1 instanceof Wall||e4 instanceof Wall||e2 instanceof Wall) return false;
-        if((e instanceof LayeredEntity||e1 instanceof LayeredEntity||e4 instanceof LayeredEntity||e2 instanceof LayeredEntity)&&!(e instanceof Grass)) return false;
-        return true;
+      
+         if(!this.collide(e)) return false;
+         
+        
+       if(c==1){
+           for(int i=0;i<10;i++){
+                e = _board.getEntity(x+i,y, this);
+                 if(!this.collide(e)) return false;
+                if(e instanceof Wall) return false;
+                if( e instanceof LayeredEntity){
+                    if(((LayeredEntity) e).getTopEntity() instanceof Brick){
+                        return false;
+                    }
+                }
+           }
+          
+           
+       }
+       else if(c==0||c==2||c==3){
+           for(int i=1;i<11;i++){
+               e2 = _board.getEntity(x, y-i, this);
+               e3 = _board.getEntity(x+i, y-i, this);
+              
+               if(!this.collide(e2)||!this.collide(e3)) return false;
+               if( e2 instanceof Wall  ){
+                   return false;
+               }
+               if( e2 instanceof LayeredEntity){
+                   if(((LayeredEntity) e2).getTopEntity() instanceof Brick){
+                       return false;
+                   }
+               }
+               if(e3 instanceof Wall){
+                   return false;
+               }
+               if( e3 instanceof LayeredEntity){
+                   if(((LayeredEntity) e3).getTopEntity() instanceof Brick){
+                       return false;
+                   }
+               }
+               
+           }
+        
+           
+       }
+       
+       
+       
+        
+      //Entity e1= _board.getEntity(x, y, this);
+      //if( e instanceof Wall||e1 instanceof Wall||e2 instanceof Wall||e3 instanceof Wall) return false;
+      // if(this.collide(e)) return true;
+      return true;
+        
+       
+           
+       
 	}
 
 	@Override
 	public boolean collide(Entity e) {
-            
+            if(e instanceof Flame||e instanceof FlameSegment){
+                this.kill();
+                return false;
+            }
+        
+        
+        
 		// TODO: xử lý va chạm với Flame
 		// TODO: xử lý va chạm với Bomber
 		return true;

@@ -1,6 +1,7 @@
 package uet.oop.bomberman.entities.tile;
 
 import uet.oop.bomberman.entities.Entity;
+import uet.oop.bomberman.entities.character.Bomber;
 import uet.oop.bomberman.graphics.Sprite;
 
 public class Portal extends Tile {
@@ -11,6 +12,9 @@ public class Portal extends Tile {
 	
 	@Override
 	public boolean collide(Entity e) {
+            if(e instanceof Bomber){
+                
+            }
 		// TODO: xử lý khi Bomber đi vào
 		return false;
 	}

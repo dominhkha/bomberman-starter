@@ -4,7 +4,7 @@ import uet.oop.bomberman.gui.Frame;
 
 public class BombermanGame {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
         new Frame();
     }
 }
