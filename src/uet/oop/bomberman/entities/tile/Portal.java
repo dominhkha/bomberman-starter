@@ -12,9 +12,7 @@ public class Portal extends Tile {
 	
 	@Override
 	public boolean collide(Entity e) {
-            if(e instanceof Bomber){
-                
-            }
+           
 		// TODO: xử lý khi Bomber đi vào
 		return false;
 	}

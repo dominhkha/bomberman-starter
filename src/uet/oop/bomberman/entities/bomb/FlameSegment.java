@@ -68,10 +68,7 @@ public class FlameSegment extends Entity {
 
 	@Override
 	public boolean collide(Entity e) {
-            if(e instanceof Brick){
-                ((Brick) e).destroy();
-                e.update();
-            }
+           
 		// TODO: xử lý khi FlameSegment va chạm với Character
 		return true;
 	}

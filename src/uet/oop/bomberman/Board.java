@@ -98,6 +98,7 @@ public class Board implements IRender {
 		
 		try {
 			_levelLoader = new FileLevelLoader(this, level);
+                      //  System.out.println(_levelLoader.getHeight()+" "+_levelLoader.getWidth());
 			_entities = new Entity[_levelLoader.getHeight() * _levelLoader.getWidth()];
 			
 			_levelLoader.createEntities();

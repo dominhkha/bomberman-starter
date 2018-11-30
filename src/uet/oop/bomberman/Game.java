@@ -5,6 +5,8 @@ import uet.oop.bomberman.gui.Frame;
 import uet.oop.bomberman.input.Keyboard;
 
 import java.awt.*;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
@@ -18,12 +20,13 @@ import uet.oop.bomberman.gui.Sound_cdjv;
  * Tạo vòng lặp cho game, lưu trữ một vài tham số cấu hình toàn
  * cục, G�?i phương thức render(), update() cho tất cả các entity
  */
-public class Game extends Canvas {
+public class Game extends Canvas{
 
     public static final int TILES_SIZE = 16,
             WIDTH = TILES_SIZE * (31 / 2),
             HEIGHT = 13 * TILES_SIZE;
 
+    public static int num_level = 3;
     public static int SCALE = 3;
 
     public static final String TITLE = "BombermanGame";
@@ -61,7 +64,7 @@ public class Game extends Canvas {
 
         screen = new Screen(WIDTH, HEIGHT);
         _input = new Keyboard();
-
+        
         _board = new Board(this, _input, screen);
         addKeyListener(_input);
     }
@@ -110,6 +113,7 @@ public class Game extends Canvas {
     private void update() {
         _input.update();
         _board.update();
+        
     }
 
     public void start() throws InterruptedException {
@@ -200,6 +204,8 @@ public class Game extends Canvas {
     public void pause() {
         _paused = true;
     }
+
+   
 
     
 

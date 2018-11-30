@@ -76,8 +76,8 @@ public class Flame extends Entity {
 	private int calculatePermitedDistance() {
            
             Entity e = _board.getEntityAt((int)_x,(int)_y);
-           
-            int radius = 0;
+            
+                int radius = 0;
 		int x = (int)_x;
 		int y = (int)_y;
 		while(radius < _radius) {
@@ -88,16 +88,18 @@ public class Flame extends Entity {
 			
 			Entity a = _board.getEntityAt(x, y);
 			
-			if(a instanceof Grass) ++radius; //explosion has to be below the mob
-			
-			if(this.collide(a) == false) //cannot pass thru
+			if(a instanceof Grass) radius++; 
+                        else if(a instanceof LayeredEntity){
+                            if(((LayeredEntity) a).getTopEntity() instanceof Grass) radius++;
+                        }
+                        if(this.collide(a) == false) 
 				break;
 			
-			++radius;
+			
+			//radius++;
 		}
+                
 		return radius;
-		//return 2;
-           // return 3;
 	}
 	
 	public FlameSegment flameSegmentAt(int x, int y) {
@@ -124,16 +126,14 @@ public class Flame extends Entity {
             if( e instanceof LayeredEntity){
                 if(((LayeredEntity) e).getTopEntity() instanceof Brick){
                     Entity e1 = ((LayeredEntity) e).getTopEntity();
-                    ((Brick)e1).destroy();
-                   // Game.POINTS +=10;
-                  //  _board.update();
+                    ((Brick)e1).collide(this);
                   _board.addPoints(10);
                 }
-                e.update();
-                return true;
+               // e.update();
+                return false;
             }
             
-            else if( e instanceof Wall){
+             if(e instanceof Wall){
                 return false;
             }
             else if(e instanceof Bomber){

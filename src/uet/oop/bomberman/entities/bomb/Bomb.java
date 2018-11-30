@@ -8,6 +8,7 @@ import uet.oop.bomberman.entities.AnimatedEntitiy;
 import uet.oop.bomberman.entities.Entity;
 import uet.oop.bomberman.graphics.Screen;
 import uet.oop.bomberman.graphics.Sprite;
+import uet.oop.bomberman.gui.Sound;
 import uet.oop.bomberman.level.Coordinates;
 
 public class Bomb extends AnimatedEntitiy {
@@ -84,6 +85,7 @@ public class Bomb extends AnimatedEntitiy {
 	protected void explode() throws InterruptedException {
 		_exploded = true;
                 _flames = new Flame[4];
+                Sound.FlameSound();
                 // Game.playSound("BOM_SOUND.wav");
                 _flames[0] = new Flame((int)_x,(int)_y,0,Game.getBombRadius(),this._board);
                 _flames[1] = new Flame((int)_x,(int)(_y),1,Game.getBombRadius(),this._board);

@@ -16,10 +16,12 @@ import uet.oop.bomberman.Game;
 import uet.oop.bomberman.entities.LayeredEntity;
 import uet.oop.bomberman.entities.character.Bomber;
 import uet.oop.bomberman.entities.character.enemy.Balloon;
+import uet.oop.bomberman.entities.character.enemy.Oneal;
 import uet.oop.bomberman.entities.tile.Grass;
 import uet.oop.bomberman.entities.tile.Portal;
 import uet.oop.bomberman.entities.tile.Wall;
 import uet.oop.bomberman.entities.tile.destroyable.Brick;
+import uet.oop.bomberman.entities.tile.item.FlameItem;
 import uet.oop.bomberman.entities.tile.item.SpeedItem;
 import uet.oop.bomberman.exceptions.LoadLevelException;
 import uet.oop.bomberman.graphics.Screen;
@@ -35,6 +37,9 @@ public class FileLevelLoader extends LevelLoader {
     private static char[][] _map;
     private static int[] x;
     private static int t = 0;
+    public static int a;
+    public static int b;
+    public static int c;
     public FileLevelLoader(Board board, int level) throws LoadLevelException {
         super(board, level);
     }
@@ -70,6 +75,7 @@ public class FileLevelLoader extends LevelLoader {
             _width = x[2];
             _height = x[1];
             _level = x[0];
+           // System.out.println(_width+" "+_height);
             for (int i = 0; i < x[1]; i++) {
                 line = reader.readLine();
 
@@ -127,33 +133,39 @@ public class FileLevelLoader extends LevelLoader {
                     _board.addCharacter(new Balloon(Coordinates.tileToPixel(i), Coordinates.tileToPixel(j) + Game.TILES_SIZE, _board));
                     _board.addEntity(xE + yE * _width, new Grass(i, j, Sprite.grass));
 
-                } else if (_map[i][j] == 'f') {
+                } else if (_map[i][j] == 's') {
                     int xI = i, yI = j;
                     _board.addEntity(xI + yI * _width,
                             new LayeredEntity(xI, yI,
                                     new Grass(xI, yI, Sprite.grass),
-                                    new SpeedItem(xI, yI, Sprite.powerup_flames),
+                                    new SpeedItem(xI, yI, Sprite.powerup_speed),
                                     new Brick(xI, yI, Sprite.brick)
                             )
                     );
 
                 } 
                 else if(_map[i][j]=='x'){
+                    a=i;
+                    b=j;
+                    c=_width;
                     int xI = i, yI = j;
-                    _board.addEntity(xI + yI * _width,
+                   
+                        _board.addEntity(xI + yI * _width,
                             new LayeredEntity(xI, yI,
                                     new Grass(xI, yI, Sprite.grass),
                                     new Portal(xI, yI, Sprite.portal),
                                     new Brick(xI, yI, Sprite.brick)
                             )
                     );
+                    
+                    
                 }
-                else if(_map[i][j]=='s'){
+                else if(_map[i][j]=='f'){
                     int xI = i, yI = j;
                     _board.addEntity(xI + yI * _width,
                             new LayeredEntity(xI, yI,
                                     new Grass(xI, yI, Sprite.grass),
-                                    new SpeedItem(xI, yI, Sprite.powerup_speed),
+                                    new FlameItem(xI, yI, Sprite.powerup_flames),
                                     new Brick(xI, yI, Sprite.brick)
                             )
                     );
@@ -167,6 +179,13 @@ public class FileLevelLoader extends LevelLoader {
                                     new Brick(xI, yI, Sprite.brick)
                             )
                     );
+                }
+                else if(_map[i][j]=='o'){
+                    int xE = i, yE = j;
+                    _board.addCharacter(new Oneal(Coordinates.tileToPixel(i), Coordinates.tileToPixel(j) + Game.TILES_SIZE, _board));
+                    _board.addEntity(xE + yE * _width, new Grass(i, j, Sprite.grass));
+
+
                 }
                 else {
                     int xE = i, yE = j;

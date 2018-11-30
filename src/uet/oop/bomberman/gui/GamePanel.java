@@ -4,11 +4,13 @@ import uet.oop.bomberman.Game;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 
 /**
  * Swing Panel chứa cảnh game
  */
-public class GamePanel extends JPanel {
+public class GamePanel extends JPanel{
 
 	private Game _game;
 	
@@ -30,5 +32,6 @@ public class GamePanel extends JPanel {
 	public Game getGame() {
 		return _game;
 	}
+
 	
 }

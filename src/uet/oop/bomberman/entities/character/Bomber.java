@@ -28,18 +28,24 @@ import static uet.oop.bomberman.graphics.Sprite.brick;
 import uet.oop.bomberman.level.Coordinates;
 import uet.oop.bomberman.level.FileLevelLoader;
 import uet.oop.bomberman.level.LevelLoader;
+import uet.oop.bomberman.entities.bomb.Bomb;
+import uet.oop.bomberman.entities.tile.item.BombItem;
+import uet.oop.bomberman.entities.tile.item.FlameItem;
+import uet.oop.bomberman.entities.tile.item.SpeedItem;
+import uet.oop.bomberman.gui.Sound;
 
 public class Bomber extends Character {
 
     private List<Bomb> _bombs;
     protected Keyboard _input;
-
+    public static int t = 1;
     /**
      * nếu giá trị này < 0 thì cho phép đặt đối tượng Bomb
      * tiếp theo, cứ mỗi lần đặt 1 Bomb mới, giá trị này sẽ
      * được reset v�? 0 và giảm dần trong mỗi lần update()
      */
     protected int _timeBetweenPutBombs = 0;
+    int c = 0;
 
     public Bomber(int x, int y, Board board) {
         super(x, y, board);
@@ -103,6 +109,7 @@ public class Bomber extends Character {
         // TODO: sau khi đặt, nhớ giảm số lượng Bomb Rate và reset _timeBetweenPutBombs v�? 0
         if (_input.space == true && Game.getBombRate() >= 0 && this._timeBetweenPutBombs < 0) {
             placeBomb(_x, _y);
+            c = 1;
             Game.addBombRate(-1);
             this._timeBetweenPutBombs = 30;
             this.update();
@@ -113,13 +120,19 @@ public class Bomber extends Character {
 
         //int xBomber =x;
         // int yBomber = y;
+        if (_board.getEntityAt(Coordinates.pixelToTile(x), Coordinates.pixelToTile(y - 8)) instanceof Bomb) {
+            return;
+        }
+
         Bomb e = new Bomb(Coordinates.pixelToTile(x), Coordinates.pixelToTile(y - 8), _board);
         //   _board.addEntity(Coordinates.pixelToTile(x) + Coordinates.pixelToTile(y)*31 , );
         // _board.addBomb(new Bomb(x,y,this._board));
         //  System.out.println("ddd");
+        c = 1;
         _board.addBomb(e);
-        //Game.playSound("BOM_BOUND.wav");
+        Sound.PlaceBombSound();
 
+        //Game.playSound("BOM_BOUND.wav");
         // TODO: thực hiện tạo đối tượng bom, đặt vào vị trí (x, y)
     }
 
@@ -143,6 +156,7 @@ public class Bomber extends Character {
             return;
         }
         _alive = false;
+        Sound.PlayerDieSound();
     }
 
     @Override
@@ -151,6 +165,7 @@ public class Bomber extends Character {
             --_timeAfter;
         } else {
             _board.endGame();
+            Sound.FinishGameSound();
         }
     }
 
@@ -191,16 +206,41 @@ public class Bomber extends Character {
         if (!this.collide(e)) {
             return false;
         }
+        Entity a = _board.getEntity(Coordinates.pixelToTile(x), Coordinates.pixelToTile(y - 8), this);
+        if (a instanceof Bomb) {
+            if (this._timeBetweenPutBombs < -20) {
+                return false;
+            }
+
+        }
         Entity e1 = null;
         Entity e2 = null;
         Entity e3 = null;
+
+        if (e instanceof LayeredEntity) {
+            if (((LayeredEntity) e).getTopEntity() instanceof FlameItem) {
+                // _board.update();
+                ((LayeredEntity) e).getTopEntity().collide(this);
+
+            }
+        }
+        if (e instanceof LayeredEntity) {
+            if (((LayeredEntity) e).getTopEntity() instanceof SpeedItem) {
+                ((LayeredEntity) e).getTopEntity().collide(this);
+            }
+        }
+        if (e instanceof LayeredEntity) {
+            if (((LayeredEntity) e).getTopEntity() instanceof BombItem) {
+                ((LayeredEntity) e).getTopEntity().collide(this);
+            }
+        }
         if (_input.down) {
             for (int i = 0; i < 10; i++) {
                 e = _board.getEntity(x + i, y, this);
                 if (!this.collide(e)) {
                     return false;
                 }
-                if (e instanceof Wall) {
+                if (e instanceof Wall || e instanceof Bomb) {
                     return false;
                 }
                 if (e instanceof LayeredEntity) {
@@ -214,13 +254,12 @@ public class Bomber extends Character {
         if (_input.up || _input.left || _input.right) {
             for (int i = 1; i < 11; i++) {
                 e2 = _board.getEntity(x, y - i, this);
-              //  System.out.println(e2);
+                //  System.out.println(e2);
                 e3 = _board.getEntity(x + i, y - i, this);
-
                 if (!this.collide(e2) || !this.collide(e3)) {
                     return false;
                 }
-                if (e2 instanceof Wall) {
+                if (e2 instanceof Wall || (e2 instanceof Bomb)) {
                     return false;
                 }
                 if (e2 instanceof LayeredEntity) {
@@ -228,24 +267,25 @@ public class Bomber extends Character {
                         return false;
                     }
                 }
-                if (e3 instanceof Wall) {
+                if (e3 instanceof Wall || (e3 instanceof Bomb)) {
                     return false;
                 }
                 if (e3 instanceof LayeredEntity) {
                     if (((LayeredEntity) e3).getTopEntity() instanceof Brick) {
                         return false;
                     }
-                }
 
+                }
             }
 
         }
 
+        return this.collide(e);
+
         //Entity e1= _board.getEntity(x, y, this);
         //if( e instanceof Wall||e1 instanceof Wall||e2 instanceof Wall||e3 instanceof Wall) return false;
         // if(this.collide(e)) return true;
-        return true;
-
+        //  return true;
     }
 
     @Override
@@ -270,7 +310,13 @@ public class Bomber extends Character {
     public boolean collide(Entity e) {
         // TODO: xử lý va chạm với Flame
         // TODO: xử lý va chạm với Enemy
-
+        // System.out.println(e);
+        
+        double x = _x;
+        double y = _y;
+        Entity e1 = null;
+        Entity e2 = null;
+        Entity e3 = null;
         if (e instanceof Flame || e instanceof Enemy || e instanceof FlameSegment) {
             this.kill();
             return false;
@@ -278,23 +324,41 @@ public class Bomber extends Character {
         if (e instanceof LayeredEntity) {
             if (((LayeredEntity) e).getTopEntity() instanceof Portal) {
                 if (_board.detectNoEnemies()) {
-                    _board.nextLevel();
-                  //  _board.endGame();
+                    if (t < Game.num_level) {
+                        t++;
+                        if (Game.getBombRadius() > 1) {
+                            Game.addBombRadius(1 - Game.getBombRadius());
+                        }
+                        _board.nextLevel();
+                    } // _board.nextLevel();
+                    else {
+                        _board.endGame();
+                        Sound.FinishGameSound();
+                    }
+
                     return false;
                 }
 
                 //   _board.nextLevel();
             }
+            if (((LayeredEntity) e).getTopEntity() instanceof Grass) {
+                if (e.getSprite() == (Sprite.oneal_dead)) {
+                    this.kill();
+                    Sound.PlayerDieSound();
+                    return false;
+                }
+            }
+
         }
-        double x = _x;
-        double y = _y;
+
         for (int i = 1; i < 11; i++) {
             e = _board.getEntity(x + i - 1, y, this);
-            Entity e2 = _board.getEntity(x, y - i, this);
-            Entity e3 = _board.getEntity(x + i, y - i, this);
+            e2 = _board.getEntity(x, y - i, this);
+            e3 = _board.getEntity(x + i, y - i, this);
             if (e instanceof Flame || e instanceof Enemy || e instanceof FlameSegment) {
                 this.kill();
             }
+
             if (e2 instanceof Flame || e2 instanceof Enemy || e2 instanceof FlameSegment) {
                 this.kill();
             }
